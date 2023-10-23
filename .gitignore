@@ -33,15 +33,15 @@
 
 # Ignore things in bin
 bin/*
-!bin
+!bin/
 
 # Ignore contents of perf dir
 perf/*
-!perf
+!perf/
 
 # Ignore contents of debug
 debug/*
-!debug
+!debug/
 
 # Ignore compile commands
 compile_commands*
