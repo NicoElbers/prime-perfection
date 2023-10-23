@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+# Ignore things in bin
+bin/*
+!bin/
+
+# Ignore contents of perf dir
+perf/*
+!perf/
+
+# Ignore contents of debug
+debug/*
+!debug/
