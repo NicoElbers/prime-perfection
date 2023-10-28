@@ -62,7 +62,7 @@ all: $(TARGET)
 
 .PHONY: run
 run: $(TARGET)
-	@./$(TARGET)
+	./$(TARGET)
 
 .PHONY: debug
 debug: $(TARGET_DEBUG)
@@ -76,7 +76,7 @@ save: $(TARGET)
 .PHONY: clean
 clean:
 	@echo CLEAN $(CLEAN_LIST)
-	@rm -f $(CLEAN_LIST)
+	rm -f $(CLEAN_LIST)
 
 .PHONY: distclean
 distclean:
