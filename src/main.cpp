@@ -5,19 +5,24 @@
 #include <vector>
 
 class Primes {
-public:
+protected:
   Primes();
-  void genPrimes(int);
-  bool contains(int);
-  std::vector<int> primeCache;
   int cacheSize;
   int highesValueChecked = 1;
+
+  // normal method
+  void genPrimes(int);
+  std::vector<int> primeCache;
+
+  // SIMD implementation
+  void genPrimesSIMD(int);
 
   // booleans
   std::vector<bool> primeCacheBool;
   void genPrimesBool(int);
 
 private:
+  // normal method
   bool isPrime(int);
 
   // possible simd implementation
@@ -30,61 +35,34 @@ Primes::Primes() {
   primeCache.push_back(3);
 }
 
-bool Primes::isPrimeSIMD(int n) { // TODO NOT IMPLEMENTED YET
-  // TODO try this configuration with simd
+bool Primes::isPrimeSIMD(int n) {
+  int num;
+  num = 5;
 
-  std::cout << "The SIMD configuration is not yet implemented" << std::endl;
-  exit(-1);
-
-  int i = 0;
-  int prime1, prime2, prime3, prime4, prime5;
-  prime1 = 2;
-  prime2 = 3;
-  prime3 = 5;
-  prime4 = 7;
-  prime5 = 11;
-
-  bool notPrime;
-  bool completed = false;
+  int lim = n;
+  bool isPrime = (n % 2 != 0 && n % 3 != 0);
+  bool completed = !isPrime || 25 > lim;
   while (!completed) {
-    notPrime = n % prime1 == 0 || n % prime2 == 0 || n % prime3 == 0 ||
-               n % prime4 == 0 || n % prime5 == 0;
-    completed = notPrime || prime5 * prime5 > n;
+    isPrime = n % num != 0 && n % (num + 2) != 0 && n % (num + 6) != 0 &&
+              n % (num + 8) != 0 && n % (num + 12) != 0 &&
+              n % (num + 14) != 0 && n % (num + 18) != 0 && n % (num + 20) != 0;
 
-    i += 5;
-    prime1 = primeCache[i];
-    prime2 = primeCache[i + 1];
-    prime3 = primeCache[i + 2];
-    prime4 = primeCache[i + 3];
-    prime5 = primeCache[i + 4];
+    completed = !isPrime || (num + 20) * (num + 20) > lim;
 
-    // make sure that the next prime is not less than the previous
-    prime2 = std::max(prime1, prime2);
-    prime3 = std::max(prime2, prime3);
-    prime4 = std::max(prime3, prime4);
-    prime5 = std::max(prime4, prime5);
+    num += 24;
   }
 
   highesValueChecked = n;
-  return !notPrime;
+  return isPrime;
 }
 
 bool Primes::isPrime(int n) {
-  // fsr this speeds up the code
-  // if (n <= highesValueChecked) {
-  //   return contains(n);
-  // }
-
-  // TODO see if I can infer the next prime from the current prime (idfk)
-
-  // Don't check cache
-  // working version
   int num = 5;
   int lim = n;
   bool isPrime = (n % 2 != 0 && n % 3 != 0);
-  bool completed = !isPrime || (num * num) > lim;
+  bool completed = !isPrime || 25 > lim; // 25 = num * num
   while (!completed) {
-    isPrime = n % num != 0 && n % (num + 2) != 0;
+    isPrime = n % (num + 2) != 0 && n % num != 0;
     completed = !isPrime || ((num + 2) * (num + 2) > lim);
 
     num += 6;
@@ -103,7 +81,26 @@ void Primes::genPrimes(int n) {
     if (isPrime(i)) {
       primeCache.push_back(i);
     }
+
     if (isPrime(i + 2)) {
+      primeCache.push_back(i + 2);
+    }
+  }
+
+  cacheSize = primeCache.size();
+}
+
+void Primes::genPrimesSIMD(int n) {
+  int upperPrimeLimit = (int)(n / 3);
+  upperPrimeLimit = upperPrimeLimit << 1;
+  primeCache.reserve(upperPrimeLimit);
+
+  for (int i = 5; i <= n; i += 6) {
+    if (isPrimeSIMD(i)) {
+      primeCache.push_back(i);
+    }
+
+    if (isPrimeSIMD(i + 2)) {
       primeCache.push_back(i + 2);
     }
   }
@@ -128,40 +125,93 @@ void Primes::genPrimesBool(int n) {
   }
 }
 
+/* ----------------- */
+
+class TestPrimes : Primes {
+private:
+  // universal thingies
+  int limit;
+
+public:
+  // constructor
+  TestPrimes(int limit);
+
+  // current working normal version
+  void calcNormalPrimes();
+  void testNormalPrimes();
+
+  // version with boolean
+  void calcBooleanPrimes();
+  void testBooleanPrimes();
+
+  // SIMD version
+  void calcSIMDPrimes();
+  void testSIMDPrimes();
+};
+
+TestPrimes::TestPrimes(int limit) { this->limit = limit; }
+
+void TestPrimes::calcNormalPrimes() { genPrimes(limit); }
+
+void TestPrimes::testNormalPrimes() {
+  calcNormalPrimes();
+
+  for (int prime : primeCache) {
+    std::cout << prime << std::endl;
+  }
+
+  std::cout << std::endl
+            << "Found " << primeCache.size() << " in the cache" << std::endl;
+}
+
+void TestPrimes::calcBooleanPrimes() { genPrimesBool(limit); }
+
+void TestPrimes::testBooleanPrimes() {
+  calcBooleanPrimes();
+
+  int counter = 2;
+  int number = 5;
+  for (int i = 0; i < primeCacheBool.size(); i += 2) {
+    if (primeCacheBool[i]) {
+      std::cout << number << std::endl;
+      counter++;
+    }
+
+    if (primeCacheBool[i + 1]) {
+      std::cout << number + 2 << std::endl;
+      counter++;
+    }
+
+    number += 6;
+  }
+
+  std::cout << "Found " << counter << " primes in the cache" << std::endl;
+}
+
+void TestPrimes::calcSIMDPrimes() { genPrimesSIMD(limit); }
+
+void TestPrimes::testSIMDPrimes() {
+  calcSIMDPrimes();
+
+  for (int prime : primeCache) {
+    std::cout << prime << std::endl;
+  }
+
+  std::cout << std::endl
+            << "Found " << primeCache.size() << " in the cache" << std::endl;
+}
+
 int main(int argc, char *argv[]) {
-  Primes p;
 
-  // version that stores the primes in a boolean vector instead
-  // p.genPrimesBool(1000000);
+  if (argc < 2)
+    exit(-22);
 
-  // std::cout << 2 << std::endl << 3 << std::endl;
+  int inputLimit = atoi(argv[1]);
 
-  // int counter = 2;
-  // int number = 5;
-  // for (int i = 0; i < p.primeCacheBool.size(); i += 2) {
-  //   if (p.primeCacheBool[i]) {
-  //     // std::cout << number << std::endl;
-  //     counter++;
-  //   }
-  //
-  //   if (p.primeCacheBool[i + 1]) {
-  //     // std::cout << number + 2 << std::endl;
-  //     counter++;
-  //   }
-  //
-  //   // number += 6;
-  // }
-  //
-  // std::cout << "Found " << counter << " primes in the cache" << std::endl;
+  TestPrimes app(inputLimit);
 
-  // current working version
-  p.genPrimes(1000000);
-
-  // for (int el : p.primeCache) {
-  //   std::cout << el << std::endl;
-  // }
-
-  std::cout << p.cacheSize << std::endl;
+  // app.testSIMDPrimes();
+  app.calcSIMDPrimes();
 
   return 0;
 }
