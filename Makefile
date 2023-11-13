@@ -1,7 +1,7 @@
 # tool macros
 CC = g++ 
 # CXX ?= # FILL: the compiler
-CFLAGS := -std=c++20
+CFLAGS := -std=c++23
 # CXXFLAGS := # FILL: compile flags
 DBGFLAGS := -g
 COBJFLAGS := $(CFLAGS) -c
