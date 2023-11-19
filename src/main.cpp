@@ -1,9 +1,11 @@
+#include "multi_primes.h"
 #include "prime_generators.h"
 #include <algorithm>
 #include <bits/chrono.h>
 #include <chrono>
 #include <cmath>
 #include <iostream>
+#include <thread>
 #include <vector>
 
 class Primes {
@@ -214,7 +216,7 @@ int main(int argc, char *argv[]) {
   std::vector<int> cache;
 
   int calc = 10000;
-  int itr = 1000;
+  int itr = 10;
   double avg_time;
   double tot_time;
   double max_time;
@@ -304,6 +306,22 @@ int main(int argc, char *argv[]) {
   std::cout << "Maximum time " << max_time << " seconds" << std::endl;
   std::cout << "Max diff " << max_time - min_time << " seconds" << std::endl;
   std::cout << std::endl;
+
+  std::vector<std::thread> theadList;
+
+  for (int i = 0; i < 16; ++i) {
+    theadList.emplace_back(prime_bucket_thread, 10, 15);
+    std::cout << theadList.back().get_id() << " started" << std::endl;
+  }
+
+  std::cout << std::endl;
+
+  for (auto &thread : theadList) {
+    if (thread.joinable()) {
+      std::cout << "rejoined " << thread.get_id() << std::endl;
+      thread.join();
+    }
+  }
 
   return 0;
 }
