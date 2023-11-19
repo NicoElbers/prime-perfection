@@ -33,3 +33,21 @@ unique_ptr<vector<int>> gen::smart(int n) {
 
   return make_unique<vector<int>>(primes);
 }
+
+unique_ptr<vector<int>> gen::multi_op(int n) {
+  vector<int> primes;
+  primes.reserve((n / 3) << 1);
+
+  primes.push_back(2);
+  primes.push_back(3);
+
+  for (int i = 5; i <= n; i += 6) {
+    if (isPrime::multi_op(i))
+      primes.push_back(i);
+
+    if (isPrime::multi_op(i + 2))
+      primes.push_back(i + 2);
+  }
+
+  return make_unique<vector<int>>(primes);
+}

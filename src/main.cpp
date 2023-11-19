@@ -209,23 +209,12 @@ void TestPrimes::testSIMDPrimes() {
 }
 
 int main(int argc, char *argv[]) {
-
-  // if (argc < 2)
-  //   exit(-22);
-  //
-  // int inputLimit = atoi(argv[1]);
-  //
-  // TestPrimes app(inputLimit);
-  //
-  // app.testSIMDPrimes();
-  // app.calcSIMDPrimes();
-
   std::cout << "started main" << std::endl;
 
   std::vector<int> cache;
 
-  int calc = 3;
-  int itr = 10000000;
+  int calc = 10000;
+  int itr = 1000;
   double avg_time;
   double tot_time;
   double max_time;
@@ -235,31 +224,32 @@ int main(int argc, char *argv[]) {
             << std::endl;
   std::cout << std::endl;
 
-  min_time = MAXFLOAT;
-  max_time = -1;
-  tot_time = 0;
-  for (int i = 0; i < itr; i++) {
-    auto start = std::chrono::high_resolution_clock::now();
-    cache = *gen::naive(calc);
-    auto end = std::chrono::high_resolution_clock::now();
+  // min_time = MAXFLOAT;
+  // max_time = -1;
+  // tot_time = 0;
+  // for (int i = 0; i < itr; i++) {
+  //   auto start = std::chrono::high_resolution_clock::now();
+  //   cache = *gen::naive(calc);
+  //   auto end = std::chrono::high_resolution_clock::now();
+  //
+  //   std::chrono::duration<double> dur = end - start;
+  //
+  //   tot_time += dur.count();
+  //
+  //   max_time = std::max(max_time, dur.count());
+  //   min_time = std::min(min_time, dur.count());
+  // }
 
-    std::chrono::duration<double> dur = end - start;
-
-    tot_time += dur.count();
-
-    max_time = std::max(max_time, dur.count());
-    min_time = std::min(min_time, dur.count());
-  }
-
-  avg_time = tot_time / itr;
-
-  std::cout << "Generated naive primes with length " << cache.size()
-            << std::endl;
-  std::cout << "This took " << avg_time << std::endl;
-  std::cout << "Minimum time " << min_time << " seconds" << std::endl;
-  std::cout << "Maximum time " << max_time << " seconds" << std::endl;
-  std::cout << "Max diff " << max_time - min_time << " seconds" << std::endl;
-  std::cout << std::endl;
+  // avg_time = tot_time / itr;
+  //
+  // std::cout << "Generated naive primes with length " << cache.size()
+  //           << std::endl;
+  // std::cout << "This took " << tot_time << " seconds in total" << std::endl;
+  // std::cout << "This took " << avg_time << " seconds on average" <<
+  // std::endl; std::cout << "Minimum time " << min_time << " seconds" <<
+  // std::endl; std::cout << "Maximum time " << max_time << " seconds" <<
+  // std::endl; std::cout << "Max diff " << max_time - min_time << " seconds" <<
+  // std::endl; std::cout << std::endl;
 
   min_time = MAXFLOAT;
   max_time = -1;
@@ -281,7 +271,35 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Generated smart primes with length " << cache.size()
             << std::endl;
-  std::cout << "This took " << avg_time << " seconds" << std::endl;
+  std::cout << "This took " << tot_time << " seconds in total" << std::endl;
+  std::cout << "This took " << avg_time << " seconds on average" << std::endl;
+  std::cout << "Minimum time " << min_time << " seconds" << std::endl;
+  std::cout << "Maximum time " << max_time << " seconds" << std::endl;
+  std::cout << "Max diff " << max_time - min_time << " seconds" << std::endl;
+  std::cout << std::endl;
+
+  min_time = MAXFLOAT;
+  max_time = -1;
+  tot_time = 0;
+  for (int i = 0; i < itr; i++) {
+    auto start = std::chrono::high_resolution_clock::now();
+    cache = *gen::multi_op(calc);
+    auto end = std::chrono::high_resolution_clock::now();
+
+    std::chrono::duration<double> dur = end - start;
+
+    tot_time += dur.count();
+
+    max_time = std::max(max_time, dur.count());
+    min_time = std::min(min_time, dur.count());
+  }
+
+  avg_time = tot_time / itr;
+
+  std::cout << "Generated multi_op primes with length " << cache.size()
+            << std::endl;
+  std::cout << "This took " << tot_time << " seconds in total" << std::endl;
+  std::cout << "This took " << avg_time << " seconds on average" << std::endl;
   std::cout << "Minimum time " << min_time << " seconds" << std::endl;
   std::cout << "Maximum time " << max_time << " seconds" << std::endl;
   std::cout << "Max diff " << max_time - min_time << " seconds" << std::endl;

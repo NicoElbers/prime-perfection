@@ -23,8 +23,15 @@ std::unique_ptr<std::vector<int>> smart(int);
 // to the vector with all primes generated
 // by the function
 //
+// Smart, optimized algorithm
+std::unique_ptr<std::vector<int>> multi_op(int);
+
+// Return a unique pointer
+// to the vector with all primes generated
+// by the function
+//
 // Smart, optimized algorithm and multi threaded
-std::unique_ptr<std::vector<int>> multi(int);
+std::unique_ptr<std::vector<int>> multi_thread(int);
 } // namespace gen
 
 #endif

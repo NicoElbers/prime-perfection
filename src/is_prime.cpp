@@ -40,3 +40,24 @@ bool isPrime::smart(int n) {
   // prime or not
   return could_be_prime;
 }
+
+bool isPrime::multi_op(int n) {
+  int num;
+  num = 5;
+
+  int lim = n;
+  bool could_be_prime = (n % 2 != 0 && n % 3 != 0);
+  bool completed = !could_be_prime || 25 > lim;
+  while (!completed) {
+    could_be_prime = n % num != 0 && n % (num + 2) != 0 && n % (num + 6) != 0 &&
+                     n % (num + 8) != 0 && n % (num + 12) != 0 &&
+                     n % (num + 14) != 0 && n % (num + 18) != 0 &&
+                     n % (num + 20) != 0;
+
+    completed = !could_be_prime || (num + 20) * (num + 20) > lim;
+
+    num += 24;
+  }
+
+  return could_be_prime;
+}
