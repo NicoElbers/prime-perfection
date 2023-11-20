@@ -31,7 +31,7 @@ std::unique_ptr<std::vector<int>> multi_op(int);
 // by the function
 //
 // Smart, optimized algorithm and multi threaded
-std::unique_ptr<std::vector<int>> multi_thread(int);
+std::unique_ptr<std::vector<int>> multi_thread(int n, int threads);
 } // namespace gen
 
 #endif

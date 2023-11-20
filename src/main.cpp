@@ -5,6 +5,7 @@
 #include <chrono>
 #include <cmath>
 #include <iostream>
+#include <memory>
 #include <thread>
 #include <vector>
 
@@ -211,27 +212,57 @@ void TestPrimes::testSIMDPrimes() {
 }
 
 int main(int argc, char *argv[]) {
-  std::cout << "started main" << std::endl;
-
-  std::vector<int> cache;
-
-  int calc = 10000;
-  int itr = 10;
-  double avg_time;
-  double tot_time;
-  double max_time;
-  double min_time;
-
-  std::cout << "Calculating unil " << calc << " with " << itr << " iterations"
-            << std::endl;
-  std::cout << std::endl;
-
+  // std::cout << "started main" << std::endl;
+  //
+  // std::vector<int> cache;
+  //
+  // int calc = 1000000;
+  // int itr = 10;
+  // double avg_time;
+  // double tot_time;
+  // double max_time;
+  // double min_time;
+  //
+  // std::cout << "Calculating unil " << calc << " with " << itr << "
+  // iterations"
+  //           << std::endl;
+  // std::cout << std::endl;
+  //
+  // // min_time = MAXFLOAT;
+  // // max_time = -1;
+  // // tot_time = 0;
+  // // for (int i = 0; i < itr; i++) {
+  // //   auto start = std::chrono::high_resolution_clock::now();
+  // //   cache = *gen::naive(calc);
+  // //   auto end = std::chrono::high_resolution_clock::now();
+  // //
+  // //   std::chrono::duration<double> dur = end - start;
+  // //
+  // //   tot_time += dur.count();
+  // //
+  // //   max_time = std::max(max_time, dur.count());
+  // //   min_time = std::min(min_time, dur.count());
+  // // }
+  //
+  // // avg_time = tot_time / itr;
+  // //
+  // // std::cout << "Generated naive primes with length " << cache.size()
+  // //           << std::endl;
+  // // std::cout << "This took " << tot_time << " seconds in total" <<
+  // std::endl;
+  // // std::cout << "This took " << avg_time << " seconds on average" <<
+  // // std::endl; std::cout << "Minimum time " << min_time << " seconds" <<
+  // // std::endl; std::cout << "Maximum time " << max_time << " seconds" <<
+  // // std::endl; std::cout << "Max diff " << max_time - min_time << " seconds"
+  // <<
+  // // std::endl; std::cout << std::endl;
+  //
   // min_time = MAXFLOAT;
   // max_time = -1;
   // tot_time = 0;
   // for (int i = 0; i < itr; i++) {
   //   auto start = std::chrono::high_resolution_clock::now();
-  //   cache = *gen::naive(calc);
+  //   cache = *gen::smart(calc);
   //   auto end = std::chrono::high_resolution_clock::now();
   //
   //   std::chrono::duration<double> dur = end - start;
@@ -241,10 +272,37 @@ int main(int argc, char *argv[]) {
   //   max_time = std::max(max_time, dur.count());
   //   min_time = std::min(min_time, dur.count());
   // }
-
+  //
   // avg_time = tot_time / itr;
   //
-  // std::cout << "Generated naive primes with length " << cache.size()
+  // std::cout << "Generated smart primes with length " << cache.size()
+  //           << std::endl;
+  // std::cout << "This took " << tot_time << " seconds in total" << std::endl;
+  // std::cout << "This took " << avg_time << " seconds on average" <<
+  // std::endl; std::cout << "Minimum time " << min_time << " seconds" <<
+  // std::endl; std::cout << "Maximum time " << max_time << " seconds" <<
+  // std::endl; std::cout << "Max diff " << max_time - min_time << " seconds" <<
+  // std::endl; std::cout << std::endl;
+  //
+  // min_time = MAXFLOAT;
+  // max_time = -1;
+  // tot_time = 0;
+  // for (int i = 0; i < itr; i++) {
+  //   auto start = std::chrono::high_resolution_clock::now();
+  //   cache = *gen::multi_op(calc);
+  //   auto end = std::chrono::high_resolution_clock::now();
+  //
+  //   std::chrono::duration<double> dur = end - start;
+  //
+  //   tot_time += dur.count();
+  //
+  //   max_time = std::max(max_time, dur.count());
+  //   min_time = std::min(min_time, dur.count());
+  // }
+  //
+  // avg_time = tot_time / itr;
+  //
+  // std::cout << "Generated multi_op primes with length " << cache.size()
   //           << std::endl;
   // std::cout << "This took " << tot_time << " seconds in total" << std::endl;
   // std::cout << "This took " << avg_time << " seconds on average" <<
@@ -253,75 +311,8 @@ int main(int argc, char *argv[]) {
   // std::endl; std::cout << "Max diff " << max_time - min_time << " seconds" <<
   // std::endl; std::cout << std::endl;
 
-  min_time = MAXFLOAT;
-  max_time = -1;
-  tot_time = 0;
-  for (int i = 0; i < itr; i++) {
-    auto start = std::chrono::high_resolution_clock::now();
-    cache = *gen::smart(calc);
-    auto end = std::chrono::high_resolution_clock::now();
-
-    std::chrono::duration<double> dur = end - start;
-
-    tot_time += dur.count();
-
-    max_time = std::max(max_time, dur.count());
-    min_time = std::min(min_time, dur.count());
-  }
-
-  avg_time = tot_time / itr;
-
-  std::cout << "Generated smart primes with length " << cache.size()
-            << std::endl;
-  std::cout << "This took " << tot_time << " seconds in total" << std::endl;
-  std::cout << "This took " << avg_time << " seconds on average" << std::endl;
-  std::cout << "Minimum time " << min_time << " seconds" << std::endl;
-  std::cout << "Maximum time " << max_time << " seconds" << std::endl;
-  std::cout << "Max diff " << max_time - min_time << " seconds" << std::endl;
-  std::cout << std::endl;
-
-  min_time = MAXFLOAT;
-  max_time = -1;
-  tot_time = 0;
-  for (int i = 0; i < itr; i++) {
-    auto start = std::chrono::high_resolution_clock::now();
-    cache = *gen::multi_op(calc);
-    auto end = std::chrono::high_resolution_clock::now();
-
-    std::chrono::duration<double> dur = end - start;
-
-    tot_time += dur.count();
-
-    max_time = std::max(max_time, dur.count());
-    min_time = std::min(min_time, dur.count());
-  }
-
-  avg_time = tot_time / itr;
-
-  std::cout << "Generated multi_op primes with length " << cache.size()
-            << std::endl;
-  std::cout << "This took " << tot_time << " seconds in total" << std::endl;
-  std::cout << "This took " << avg_time << " seconds on average" << std::endl;
-  std::cout << "Minimum time " << min_time << " seconds" << std::endl;
-  std::cout << "Maximum time " << max_time << " seconds" << std::endl;
-  std::cout << "Max diff " << max_time - min_time << " seconds" << std::endl;
-  std::cout << std::endl;
-
-  std::vector<std::thread> theadList;
-
-  for (int i = 0; i < 16; ++i) {
-    theadList.emplace_back(prime_bucket_thread, 10, 15);
-    std::cout << theadList.back().get_id() << " started" << std::endl;
-  }
+  gen::multi_thread(1000000, 16);
 
   std::cout << std::endl;
-
-  for (auto &thread : theadList) {
-    if (thread.joinable()) {
-      std::cout << "rejoined " << thread.get_id() << std::endl;
-      thread.join();
-    }
-  }
-
   return 0;
 }
