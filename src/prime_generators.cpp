@@ -6,7 +6,7 @@
 
 using namespace std;
 
-unique_ptr<vector<int>> gen::naive(int n) {
+vector<int> gen::naive(int n) {
   vector<int> primes;
 
   for (int i = 2; i <= n; ++i) {
@@ -14,10 +14,10 @@ unique_ptr<vector<int>> gen::naive(int n) {
       primes.push_back(i);
   }
 
-  return make_unique<vector<int>>(primes);
+  return primes;
 }
 
-unique_ptr<vector<int>> gen::smart(int n) {
+vector<int> gen::smart(int n) {
   vector<int> primes;
   primes.reserve((n / 3) << 1);
 
@@ -32,10 +32,10 @@ unique_ptr<vector<int>> gen::smart(int n) {
       primes.push_back(i + 2);
   }
 
-  return make_unique<vector<int>>(primes);
+  return primes;
 }
 
-unique_ptr<vector<int>> gen::multi_op(int n) {
+vector<int> gen::multi_op(int n) {
   vector<int> primes;
   primes.reserve((n / 3) << 1);
 
@@ -50,10 +50,10 @@ unique_ptr<vector<int>> gen::multi_op(int n) {
       primes.push_back(i + 2);
   }
 
-  return make_unique<vector<int>>(primes);
+  return primes;
 }
 
-unique_ptr<vector<int>> gen::multi_thread(int n, int threads) {
+vector<int> gen::multi_thread(int n, int threads) {
   int bucketSize = n / threads;
 
   int leftover = n % threads;
@@ -71,16 +71,17 @@ unique_ptr<vector<int>> gen::multi_thread(int n, int threads) {
   int startNums[threads];
   int num = 0;
   for (int i = 0; i < threads; ++i) {
+    int goodNum = num - ((num - 5) % 6);
 
     startNums[i] = num - ((num - 5) % 6);
+
     num += bucketSizes[i];
 
     cout << "Num is now " << num << endl;
 
-    int goodNum = num - ((num - 5) % 6);
     cout << "Counts from " << goodNum << " to " << goodNum + bucketSizes[i]
          << endl;
   }
 
-  return make_unique<vector<int>>(vector<int>());
+  return vector<int>();
 }

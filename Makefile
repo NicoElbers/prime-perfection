@@ -47,7 +47,7 @@ TEST_SRC += $(foreach x, $(TEST_PATH), $(wildcard $(addprefix $(x)/*,.c*)))
 # object files
 MAIN_OBJ := $(addprefix $(OBJ_PATH)/, $(addsuffix .o, $(notdir $(basename $(MAIN_SRC)))))
 TEST_OBJ := $(addprefix $(OBJ_PATH)/, $(addsuffix .o, $(notdir $(basename $(TEST_SRC)))))
-DEBG_OBJ := $(addprefix $(OBJ_PATH)/, $(addsuffix .o, $(notdir $(basename $(MAIN_SRC)))))
+DEBG_OBJ := $(addprefix $(DBG_PATH)/, $(addsuffix .o, $(notdir $(basename $(MAIN_SRC)))))
 
 
 # clean files list
@@ -64,13 +64,16 @@ default: dir main test
 
 # non-phony targets
 $(TARGET_MAIN): $(MAIN_OBJ)
-	$(CC) -o $@ $(MAIN_OBJ) $(CFLAGS)
+	$(CC) $(MAIN_OBJ) $(CFLAGS) -o $@
 
 $(TARGET_TEST): $(TEST_OBJ)
-	$(CC) -o $@ $(TEST_OBJ) $(DBGFLAGS) $(CFLAGS)
+	$(CC) $(TEST_OBJ) $(DBGFLAGS) $(CFLAGS) -o $@
 
 $(TARGET_DEBG): $(DEBG_OBJ)
-	$(CC) -o $@ $(DEBG_OBJ) $(DBGFLAGS) $(CFLAGS)
+	$(CC) $(DEBG_OBJ) $(DBGFLAGS) $(CFLAGS) -o $@
+
+$(DBG_PATH)/%.o: $(SRC_PATH)/%.c*
+	$(CC) $(COBJFLAGS) $(DBGFLAGS) -o $@ $<
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c*
 	$(CC) $(COBJFLAGS) -o $@ $<

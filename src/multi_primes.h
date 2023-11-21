@@ -8,6 +8,6 @@
 // It is assume that (start - 5) is divisible by 6
 //
 // Returns a unique pointer to a vector with all the generated primes in order
-std::unique_ptr<std::vector<int>> prime_bucket_thread(int start, int end);
+std::vector<int> prime_bucket_thread(int start, int end);
 
 #endif
