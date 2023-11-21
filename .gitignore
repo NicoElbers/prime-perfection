@@ -40,7 +40,7 @@ perf/*
 !perf/
 
 # Ignore contents of debug
-debug/*
+dbg/*
 !debug/
 
 # Ignore compile commands
