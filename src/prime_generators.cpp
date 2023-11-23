@@ -1,16 +1,12 @@
 #include "prime_generators.h"
 #include "is_prime.h"
 #include "multi_primes.h"
-#include <algorithm>
 #include <chrono>
 #include <future>
 #include <iostream>
 #include <latch>
 #include <list>
-#include <memory>
-#include <ratio>
 #include <thread>
-#include <utility>
 #include <vector>
 
 using namespace std;

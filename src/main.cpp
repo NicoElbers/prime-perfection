@@ -1,4 +1,3 @@
-#include "multi_primes.h"
 #include "prime_generators.h"
 #include <iostream>
 
