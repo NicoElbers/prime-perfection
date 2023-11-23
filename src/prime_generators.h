@@ -31,7 +31,7 @@ std::vector<int> multi_op(int);
 // by the function
 //
 // Smart, optimized algorithm and multi threaded
-std::vector<int> multi_thread(int n, int threads);
+std::vector<int> multi_thread(int n);
 } // namespace gen
 
 #endif

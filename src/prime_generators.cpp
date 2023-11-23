@@ -1,7 +1,16 @@
 #include "prime_generators.h"
 #include "is_prime.h"
+#include "multi_primes.h"
+#include <algorithm>
+#include <chrono>
+#include <future>
 #include <iostream>
+#include <latch>
+#include <list>
 #include <memory>
+#include <ratio>
+#include <thread>
+#include <utility>
 #include <vector>
 
 using namespace std;
@@ -53,35 +62,89 @@ vector<int> gen::multi_op(int n) {
   return primes;
 }
 
-vector<int> gen::multi_thread(int n, int threads) {
+struct thread_info {
+  int startNum;
+  int endNum;
+};
+
+vector<int> gen::multi_thread(int n) {
+  int threads = std::thread::hardware_concurrency();
+
   int bucketSize = n / threads;
 
   int leftover = n % threads;
 
   int bucketSizes[threads];
 
-  for (int bucket : bucketSizes) {
-    bucket = bucketSize;
+  for (int i = 0; i < threads; ++i) {
+    bucketSizes[i] = bucketSize;
   }
 
   for (int i = leftover; i > 0; --i) {
     bucketSizes[i]++;
   }
 
-  int startNums[threads];
+  thread_info init_values[threads];
   int num = 0;
   for (int i = 0; i < threads; ++i) {
-    int goodNum = num - ((num - 5) % 6);
+    int startNum = num - ((num - 5) % 6);
+    int combinedNum = startNum + bucketSizes[i];
+    int endNum = combinedNum - ((combinedNum - 5) % 6);
 
-    startNums[i] = num - ((num - 5) % 6);
+    if (endNum > n)
+      endNum = n;
 
-    num += bucketSizes[i];
-
-    cout << "Num is now " << num << endl;
-
-    cout << "Counts from " << goodNum << " to " << goodNum + bucketSizes[i]
-         << endl;
+    init_values[i] = {startNum, endNum};
+    num = endNum + 6;
   }
 
-  return vector<int>();
+  std::cout << "Default bucket size " << bucketSize << std::endl;
+  for (thread_info ti : init_values) {
+    std::cout << "Start num: " << ti.startNum << "; End num: " << ti.endNum
+              << "; size: " << (ti.endNum - ti.startNum) << std::endl;
+  }
+
+  std::list<std::vector<int>> primeList;
+
+  std::vector<int> low_primes;
+  low_primes.push_back(2);
+  low_primes.push_back(3);
+
+  primeList.push_back(low_primes);
+
+  std::vector<std::future<std::vector<int>>> handles;
+
+  {
+    for (thread_info info : init_values) {
+      handles.push_back(std::async(std::launch::async, prime_thread,
+                                   info.startNum, info.endNum));
+    }
+  }
+
+  std::latch work_done{static_cast<ptrdiff_t>(handles.size())};
+
+  while (!work_done.try_wait()) {
+    for (std::future<std::vector<int>> &handle : handles) {
+      if (!handle.valid())
+        continue;
+
+      std::future_status status = handle.wait_for(std::chrono::nanoseconds(0));
+
+      if (status == std::future_status::ready) {
+        primeList.push_back(handle.get());
+        work_done.count_down();
+      }
+    }
+  }
+
+  // TODO make sure that the prime list is sorted
+
+  std::vector<int> out;
+  out.reserve((n << 1) / 3);
+
+  for (std::vector<int> primes : primeList)
+    for (int prime : primes)
+      out.push_back(prime);
+
+  return out;
 }

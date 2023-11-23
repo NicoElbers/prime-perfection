@@ -2,7 +2,8 @@
 CC = g++
 
 # compiler flags
-CFLAGS := -std=c++23
+# CFLAGS := -std=c++23
+CFLAGS := -std=c++2b
 
 # main file
 MAIN_FILE = main.cpp

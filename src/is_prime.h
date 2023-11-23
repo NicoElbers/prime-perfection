@@ -20,6 +20,7 @@ bool smart(int);
 // Smart algorithm that does multiple operation
 // per loop
 bool multi_op(int);
+
 } // namespace isPrime
 
 #endif // !ISPRIME

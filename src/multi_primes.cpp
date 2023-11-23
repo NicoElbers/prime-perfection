@@ -1,21 +1,29 @@
 #include "multi_primes.h"
+#include "is_prime.h"
 #include <chrono>
+#include <cstdlib>
+#include <future>
 #include <iostream>
 #include <memory>
 #include <thread>
 #include <vector>
 
-using namespace std;
+std::vector<int> prime_thread(int start, int end) {
+  if ((start - 5) % 6 != 0) {
+    std::cerr << "ERROR: invalid start number in thread "
+              << std::this_thread::get_id() << std::endl;
+    std::cerr << "The invalid start num is " << start << std::endl;
+    exit(1);
+  }
 
-vector<int> prime_bucket_thread(int start, int end) {
-  cout << "Started thread" << endl;
+  std::vector<int> primes;
+  for (int i = start; i <= end; i += 6) {
+    if (isPrime::smart(i))
+      primes.push_back(i);
 
-  this_thread::sleep_for(chrono::seconds(5));
+    if (isPrime::smart(i + 2))
+      primes.push_back(i + 2);
+  }
 
-  vector<int> test_vec;
-
-  for (int i = 0; i < 100; ++i)
-    test_vec.emplace_back(i);
-
-  return test_vec;
+  return primes;
 }
