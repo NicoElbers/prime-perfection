@@ -1,10 +1,7 @@
 #include "prime_generators.h"
 #include "is_prime.h"
 #include "multi_primes.h"
-#include <chrono>
 #include <future>
-#include <iostream>
-#include <latch>
 #include <list>
 #include <thread>
 #include <vector>
@@ -94,12 +91,6 @@ vector<int> gen::multi_thread(int n) {
     num = endNum + 6;
   }
 
-  std::cout << "Default bucket size " << bucketSize << std::endl;
-  for (thread_info ti : init_values) {
-    std::cout << "Start num: " << ti.startNum << "; End num: " << ti.endNum
-              << "; size: " << (ti.endNum - ti.startNum) << std::endl;
-  }
-
   std::list<std::vector<int>> primeList;
 
   std::vector<int> low_primes;
@@ -117,23 +108,10 @@ vector<int> gen::multi_thread(int n) {
     }
   }
 
-  std::latch work_done{static_cast<ptrdiff_t>(handles.size())};
-
-  while (!work_done.try_wait()) {
-    for (std::future<std::vector<int>> &handle : handles) {
-      if (!handle.valid())
-        continue;
-
-      std::future_status status = handle.wait_for(std::chrono::nanoseconds(0));
-
-      if (status == std::future_status::ready) {
-        primeList.push_back(handle.get());
-        work_done.count_down();
-      }
-    }
+  for (auto &handle : handles) {
+    handle.wait();
+    primeList.push_back(handle.get());
   }
-
-  // TODO make sure that the prime list is sorted
 
   std::vector<int> out;
   out.reserve((n << 1) / 3);

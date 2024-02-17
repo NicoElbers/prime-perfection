@@ -1,10 +1,13 @@
 # compiler
 CC = g++
-# CC = clang++
+
+# libraries
+LIB_PATH := libs
 
 # compiler flags
-# CFLAGS := -std=c++23 
+LFLAGS := -lfancyfunc 
 CFLAGS := -std=c++2b 
+TFLAGS := $(CFLAGS) -lgtest 
 
 # main file
 MAIN_FILE = main.cpp
@@ -17,6 +20,7 @@ TEST_PROGRAM = tests
 # compiler flags
 DBGFLAGS := -g
 COBJFLAGS := $(CFLAGS) -c
+
 
 # paths
 BIN_PATH  := bin
@@ -66,22 +70,22 @@ default: dir main test
 
 # non-phony targets
 $(TARGET_MAIN): $(MAIN_OBJ)
-	$(CC) $(MAIN_OBJ) $(CFLAGS) -o $@
+	$(CC) $(MAIN_OBJ) $(CFLAGS) $(LFLAGS) -o $@
 
 $(TARGET_TEST): $(TEST_OBJ)
-	$(CC) $(TEST_OBJ) $(DBGFLAGS) $(CFLAGS) -o $@
+	$(CC) $(TEST_OBJ) $(DBGFLAGS) $(TFLAGS) $(LFLAGS) -o $@ 
 
 $(TARGET_DEBG): $(DEBG_OBJ)
-	$(CC) $(DEBG_OBJ) $(DBGFLAGS) $(CFLAGS) -o $@
+	$(CC) $(DEBG_OBJ) $(DBGFLAGS) $(CFLAGS) $(LFLAGS) -o $@
 
 $(DBG_PATH)/%.o: $(SRC_PATH)/%.c*
-	$(CC) $(COBJFLAGS) $(DBGFLAGS) -o $@ $<
+	$(CC) $(COBJFLAGS)  -o $@ $< $(DBGFLAGS)
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c*
-	$(CC) $(COBJFLAGS) -o $@ $<
+	$(CC) $(COBJFLAGS)  -o $@ $<
 
 $(OBJ_PATH)/%.o: $(TEST_PATH)/%.c*
-	$(CC) $(COBJFLAGS) -o $@ $<
+	$(CC) $(COBJFLAGS)  -o $@ $< 
 
 # phony rules
 .PHONY: dir

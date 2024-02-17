@@ -1,5 +1,4 @@
 #include "is_prime.h"
-#include <iostream>
 
 bool isPrime::naive(int n) {
   if (n <= 1)

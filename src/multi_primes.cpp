@@ -1,10 +1,7 @@
 #include "multi_primes.h"
 #include "is_prime.h"
-#include <chrono>
 #include <cstdlib>
-#include <future>
 #include <iostream>
-#include <memory>
 #include <thread>
 #include <vector>
 

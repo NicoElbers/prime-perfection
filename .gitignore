@@ -33,15 +33,13 @@
 
 # Ignore things in bin
 bin/*
-!bin/
 
 # Ignore contents of perf dir
 perf/*
-!perf/
 
 # Ignore contents of debug
 dbg/*
-!debug/
 
 # Ignore compile commands
 compile_commands*
+.cache
