@@ -32,14 +32,20 @@
 *.app
 
 # Ignore things in bin
-bin/*
+**/bin/*
 
 # Ignore contents of perf dir
-perf/*
+**/perf/*
 
 # Ignore contents of debug
-dbg/*
+**/dbg/*
+
+# Ignore saved binaries
+**/save/*
 
 # Ignore compile commands
-compile_commands*
-.cache
+**/compile_commands*
+**/.cache
+
+# Rust ignore
+**/target
