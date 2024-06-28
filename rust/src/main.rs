@@ -1,47 +1,32 @@
-use std::time::Instant;
+mod generator;
+mod prime_checker;
+
+use std::{env::args, time::Instant};
+
+use crate::generator::gen_primes;
 
 fn main() {
+    let mut args = args();
+
+    let max: u64 = args
+        .nth(1) //
+        .map(|val| val.parse().unwrap_or(1))
+        .unwrap_or(1);
+
+    let loops: u64 = match args.nth(2) {
+        Some(arg) => arg.parse().unwrap_or(1),
+        None => 1,
+    };
+
+    println!("Calculating all primes under {max}");
+
     let now = Instant::now();
-    let res = gen_primes(1_000_000_000);
+    for i in 0..loops {
+        let res = gen_primes(max);
+        #[cfg(debug_assertions)]
+        println!("Result had {} results in loop {i}", res.len());
+    }
     let elapsed = now.elapsed().as_millis();
 
-    println!("Result had {} results", res.len());
     println!("This took {elapsed}ms");
-}
-
-fn gen_primes(max: u64) -> Vec<u64> {
-    let mut result: Vec<u64> = Vec::new();
-
-    for n in 2..=max {
-        if is_prime(n) {
-            result.push(n);
-        }
-    }
-
-    result
-}
-
-fn is_prime(n: u64) -> bool {
-    debug_assert!(n >= 2);
-
-    if n < 4 {
-        return true;
-    }
-
-    if n % 2 == 0 || n % 3 == 0 {
-        return false;
-    }
-
-    let mut i = 5u64;
-    while i * i <= n {
-        if n % i == 0 {
-            return false;
-        }
-        if n % (i + 2) == 0 {
-            return false;
-        }
-        i += 6;
-    }
-
-    true
 }

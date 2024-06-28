@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
   // measurementFunc(gen::multi_thread, max_ms, itr);
 
   // auto start = std::chrono::high_resolution_clock::now();
-  auto cache = gen::multi_thread(10'000'000);
+  auto cache = gen::multi_thread(1'000'000);
   // auto end = std::chrono::high_resolution_clock::now();
 
   // auto dur = std::chrono::duration_cast<std::chrono::milliseconds>(end -
