@@ -6,19 +6,19 @@ use std::{env::args, time::Instant};
 use crate::generator::gen_primes;
 
 fn main() {
-    let mut args = args();
+    // let max: u64 = args()
+    //     .nth(1) //
+    //     .map_or(1, |val| val.parse().unwrap_or(1));
+    //
+    // let loops: u64 = args()
+    //     .nth(2) //
+    //     .map_or(1, |val| val.parse().unwrap_or(1));
 
-    let max: u64 = args
-        .nth(1) //
-        .map(|val| val.parse().unwrap_or(1))
-        .unwrap_or(1);
+    // println!("Calculating all primes under {max}");
+    // println!("For {loops} loops");
 
-    let loops: u64 = match args.nth(2) {
-        Some(arg) => arg.parse().unwrap_or(1),
-        None => 1,
-    };
-
-    println!("Calculating all primes under {max}");
+    let max = 1_000_000;
+    let loops = 1;
 
     let now = Instant::now();
     for i in 0..loops {
